@@ -12,6 +12,9 @@
 import java.util.Scanner;
 
 public class PizzaTwo {
+  private static boolean hasOwnersName(String name) {
+    return name.equalsIgnoreCase("Kaylyn") || name.equalsIgnoreCase("Tim");
+  }
 
   public static void main(String[] args) {
     // Scanner and Variables
@@ -36,7 +39,7 @@ public class PizzaTwo {
     System.out.print("Enter your first name: ");
     String name = sc.next();
     // NAME: discount eligibility
-    if (name.equalsIgnoreCase("Kaylyn") || name.equalsIgnoreCase("Tim")) {
+    if (hasOwnersName(name)) {
       discounted = true;
       if (discounted) {
         System.out.println();
