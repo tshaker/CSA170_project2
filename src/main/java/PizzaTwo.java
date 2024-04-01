@@ -16,6 +16,28 @@ public class PizzaTwo {
     return name.equalsIgnoreCase("Kaylyn") || name.equalsIgnoreCase("Tim");
   }
 
+  private static void printMenu() {
+    // MENU: SIZE & COST
+    System.out.println();
+    System.out.println(" Pizza Size |   Cost ");
+    System.out.println("---------------------");
+    System.out.println("    10\"     |  $10.99");
+    System.out.println("    12\"     |  $12.99");
+    System.out.println("    14\"     |  $14.99");
+    System.out.println("    16\"     |  $16.99");
+    System.out.println();
+  }
+
+  private static boolean userAffirms(Scanner sc) {
+    char choice = sc.next().toUpperCase().charAt(0);
+    while (choice != 'Y' && choice != 'N') {
+      System.out.print("Please enter Y for Yes or N for No: ");
+      choice = sc.next().toUpperCase().charAt(0);
+    }
+
+    return choice == 'Y';
+  }
+
   public static void main(String[] args) {
     // Scanner and Variables
     Scanner sc = new Scanner(System.in);
@@ -27,7 +49,6 @@ public class PizzaTwo {
 
     int numOfToppings = 0;
     String toppings = "Cheese ";
-    char yesNo = ' ';
 
     final double DISCOUNT = 2.00;
     final double TAX_RATE = 0.0795;
@@ -48,15 +69,7 @@ public class PizzaTwo {
       }
     }
 
-    // MENU: SIZE & COST
-    System.out.println();
-    System.out.println(" Pizza Size |   Cost ");
-    System.out.println("---------------------");
-    System.out.println("    10\"     |  $10.99");
-    System.out.println("    12\"     |  $12.99");
-    System.out.println("    14\"     |  $14.99");
-    System.out.println("    16\"     |  $16.99");
-    System.out.println();
+    printMenu();
 
     // SIZE: user prompt
     System.out.println("What size pizza would you like?");
@@ -108,29 +121,26 @@ public class PizzaTwo {
     System.out.println("Pepperoni, Sausage, Onion, Mushroom");
 
     System.out.print("	Do you want Pepperoni? (Y/N): ");
-    yesNo = sc.next().toUpperCase().charAt(0);
-    if (yesNo == 'Y') {
+
+    if (userAffirms(sc)) {
       numOfToppings++;
       toppings += "Pepperoni ";
     }
 
     System.out.print("	Do you want Sausage? (Y/N): ");
-    yesNo = sc.next().toUpperCase().charAt(0);
-    if (yesNo == 'Y') {
+    if (userAffirms(sc)) {
       numOfToppings++;
       toppings += "Sausage ";
     }
 
     System.out.print("	Do you want Onion? (Y/N): ");
-    yesNo = sc.next().toUpperCase().charAt(0);
-    if (yesNo == 'Y') {
+    if (userAffirms(sc)) {
       numOfToppings++;
       toppings += "Onion ";
     }
 
     System.out.print("	Do you want Mushroom? (Y/N): ");
-    yesNo = sc.next().toUpperCase().charAt(0);
-    if (yesNo == 'Y') {
+    if (userAffirms(sc)) {
       numOfToppings++;
       toppings += "Mushroom ";
     }
