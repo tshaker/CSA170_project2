@@ -11,7 +11,7 @@
 
 import java.util.Scanner;
 
-public class PizzaOrder {
+public class PizzaOne {
 
   public static void main(String[] args) {
     // Scanner and Variables
@@ -152,7 +152,7 @@ public class PizzaOrder {
     // Order RECEIPT
     System.out.println("Your order is as follows:"); 
     System.out.println(size + "-inch pizza"); //SIZE
-    System.out.println(printCrust);
+    System.out.println(printCrust); //CRUST
     System.out.println(toppings); //TOPPINGS
 
     
