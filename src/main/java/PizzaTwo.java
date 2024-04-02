@@ -10,8 +10,9 @@
 */
 
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class PizzaTwo {
   // CONSTANTS
@@ -31,14 +32,10 @@ public class PizzaTwo {
   }
 
   private static void printMenu() {
-    String msg = "";
-    msg += "Pizza Size  |   Cost \n";
-    msg += "---------------------\n";
-    msg += "    10\"    |  $10.99\n";
-    msg += "    12\"    |  $12.99\n";
-    msg += "    14\"    |  $14.99\n";
-    msg += "    16\"    |  $16.99\n";
-    JOptionPane.showMessageDialog(null, msg);
+    String[] cols = { "Pizza Size", "Cost" };
+    String[][] data = { { "10\"", "$10.99" }, { "12\"", "$12.99" }, { "14\"", "$14.99" }, { "16\"", "$16.99" } };
+    JTable table = new JTable(data, cols);
+    JOptionPane.showMessageDialog(null, new JScrollPane(table));
   }
 
   private static void getToppingChoice(ArrayList<String> toppings, String topping) {
