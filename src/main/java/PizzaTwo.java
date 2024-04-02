@@ -9,72 +9,72 @@
   Project 2
 */
 
-import java.util.Scanner;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 public class PizzaTwo {
+  final static double DISCOUNT = 2.00;
+  final static double TAX_RATE = 0.0795;
+  final static double TOPPING_CHARGE = 1.25;
+  final static String[] OWNERS = { "Kaylyn", "Tim" };
+
+  private static boolean discounted = false;
+  private static int size = 12;
+  private static char crust = 'H';
+  private static String printCrust = "";
+  private static ArrayList<String> toppings = new ArrayList<String>();
+  private static double total = 0;
+
   private static boolean hasOwnersName(String name) {
-    return name.equalsIgnoreCase("Kaylyn") || name.equalsIgnoreCase("Tim");
+    for (String owner : OWNERS) {
+      if (owner.equalsIgnoreCase(name)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static void printMenu() {
-    // MENU: SIZE & COST
-    System.out.println();
-    System.out.println(" Pizza Size |   Cost ");
-    System.out.println("---------------------");
-    System.out.println("    10\"     |  $10.99");
-    System.out.println("    12\"     |  $12.99");
-    System.out.println("    14\"     |  $14.99");
-    System.out.println("    16\"     |  $16.99");
-    System.out.println();
+    String msg = "";
+    msg += "Pizza Size  |   Cost \n";
+    msg += "---------------------\n";
+    msg += "    10\"    |  $10.99\n";
+    msg += "    12\"    |  $12.99\n";
+    msg += "    14\"    |  $14.99\n";
+    msg += "    16\"    |  $16.99\n";
+    JOptionPane.showMessageDialog(null, msg);
   }
 
-  private static boolean userAffirms(Scanner sc) {
-    char choice = sc.next().toUpperCase().charAt(0);
+  private static void getToppingChoice(String topping) {
+    String msg = "Do you want " + topping + "? (Y/N):";
+    char choice = JOptionPane.showInputDialog(msg).toUpperCase().charAt(0);
     while (choice != 'Y' && choice != 'N') {
-      System.out.print("Please enter Y for Yes or N for No: ");
-      choice = sc.next().toUpperCase().charAt(0);
+      choice = JOptionPane.showInputDialog("Please enter Y for Yes or N for No.\n" + msg).toUpperCase().charAt(0);
     }
 
-    return choice == 'Y';
+    if (choice == 'Y') {
+      toppings.add(topping);
+    }
   }
 
   public static void main(String[] args) {
-    // Scanner and Variables
-    Scanner sc = new Scanner(System.in);
-
-    boolean discounted = false;
-    int size = 12;
-    char crust = 'H';
-    String printCrust = "";
-
-    int numOfToppings = 0;
-    String toppings = "Cheese ";
-
-    final double DISCOUNT = 2.00;
-    final double TAX_RATE = 0.0795;
-    final double TOPPING_CHARGE = 1.25;
-    double total = 0;
-
     // NAME: user prompt
-    System.out.println("Welcome to Tim and Kaylyn’s Pizzeria");
-    System.out.print("Enter your first name: ");
-    String name = sc.next();
+    JOptionPane.showMessageDialog(null, "Welcome to Tim and Kaylyn’s Pizzeria");
+    String name = JOptionPane.showInputDialog("Enter your first name.");
     // NAME: discount eligibility
     if (hasOwnersName(name)) {
       discounted = true;
-      if (discounted) {
-        System.out.println();
-        System.out.println("You have the same name as one of the owners, you are eligible for a $2.00 discount!");
-        total -= DISCOUNT;
-      }
+      JOptionPane.showMessageDialog(null,
+          "You have the same name as one of the owners, you are eligible for a $2.00 discount!");
     }
 
     printMenu();
 
     // SIZE: user prompt
-    System.out.println("What size pizza would you like?");
-    System.out.print("10, 12, 14, or 16 (enter the number only): ");
-    size = sc.nextInt();
+    String pizzaSize = JOptionPane
+        .showInputDialog("What size pizza would you like?\n10, 12, 14, or 16 (enter the number only): ");
+    size = Integer.parseInt(pizzaSize);
     // SIZE: pricing
     if (size == 10) {
       total += 10.99;
@@ -85,18 +85,16 @@ public class PizzaTwo {
     } else if (size == 16) {
       total += 16.99;
     } else {
-      System.out.println("Your input was not one of the choices, so a 12-inch pizza will be made.");
+      JOptionPane.showMessageDialog(null, "Your input was not one of the choices, so a 12-inch pizza will be made.");
       total += 12.99;
       size = 12;
     }
 
-    System.out.println(); // line-break
-
     // CRUST: user prompt
-    System.out.println("What type of crust do you want?");
-    System.out.println("	(H)Hand-tossed, (T) Thin-crust, or (D) Deep-dish");
-    System.out.print("enter (H, T, or D):");
-    crust = sc.next().toUpperCase().charAt(0);
+    crust = JOptionPane
+        .showInputDialog(
+            "What type of crust do you want?\n(H) Hand-tossed\n(T) Thin-crust\n(D) Deep-dish\nEnter (H, T, or D): ")
+        .toUpperCase().charAt(0);
     switch (crust) {
       case 'H':
         printCrust = "Hand-tossed crust";
@@ -108,62 +106,40 @@ public class PizzaTwo {
         printCrust = "Deep-dish";
         break;
       default:
-        System.out.println("Your input was not one of the choices, so a Hand-tossed crust will be made.");
+        JOptionPane.showMessageDialog(null,
+            "Your input was not one of the choices, so a Hand-tossed crust will be made.");
         printCrust = "Hand-tossed crust";
         break;
     }
 
-    System.out.println(); // line-break
-
     // TOPPINGS: user prompt
-    System.out.println("All pizzas come with cheese.");
-    System.out.println("Additional toppings are $1.25 each, choose from:");
-    System.out.println("Pepperoni, Sausage, Onion, Mushroom");
+    JOptionPane.showMessageDialog(null,
+        "All pizzas come with cheese.\nAdditional toppings are $1.25 each, choose from:\nPepperoni, Sausage, Onion, Mushroom");
+    toppings.add("Cheese");
 
-    System.out.print("	Do you want Pepperoni? (Y/N): ");
+    getToppingChoice("Pepperoni");
+    getToppingChoice("Sausage");
+    getToppingChoice("Onion");
+    getToppingChoice("Mushroom");
 
-    if (userAffirms(sc)) {
-      numOfToppings++;
-      toppings += "Pepperoni ";
-    }
-
-    System.out.print("	Do you want Sausage? (Y/N): ");
-    if (userAffirms(sc)) {
-      numOfToppings++;
-      toppings += "Sausage ";
-    }
-
-    System.out.print("	Do you want Onion? (Y/N): ");
-    if (userAffirms(sc)) {
-      numOfToppings++;
-      toppings += "Onion ";
-    }
-
-    System.out.print("	Do you want Mushroom? (Y/N): ");
-    if (userAffirms(sc)) {
-      numOfToppings++;
-      toppings += "Mushroom ";
-    }
     // TOPPINGS: additional charge
-    total += (numOfToppings * TOPPING_CHARGE);
+    total += (toppings.size() - 1 * TOPPING_CHARGE);
+    if (discounted && total >= DISCOUNT) {
+      total -= DISCOUNT;
+    }
 
-    System.out.println(); // line-break
-
-    // Order RECEIPT
-    System.out.println("Your order is as follows:");
-    System.out.println(size + "-inch pizza"); // SIZE
-    System.out.println(printCrust);
-    System.out.println(toppings); // TOPPINGS
-
-    // TOTAL PRICING
-    System.out.println();
-    System.out.printf("The cost of your order is: $%.2f%n", total);
-    System.out.printf("The tax is: $%.2f%n", (total * TAX_RATE));
-    System.out.printf("The total due is: $%.2f%n", (total + (total * TAX_RATE)));
-    System.out.println("Your order will be ready for pickup in 30 minutes.");
-
-    sc.close();
-
+    printSummary();
   }
 
+  private static void printSummary() {
+    String msg = "Your order is as follows:\n";
+    msg += size + "-inch pizza\n"; // SIZE
+    msg += printCrust + "\n";
+    msg += toppings.toString() + "\n"; // TOPPINGS
+    msg += "The cost of your order is: $" + String.format("%.2f", total) + "\n";
+    msg += "The tax is: $" + String.format("%.2f", (total * TAX_RATE)) + "\n";
+    msg += "The total due is: $" + String.format("%.2f", total + (total * TAX_RATE)) + "\n";
+    msg += "Your order will be ready for pickup in 30 minutes.";
+    JOptionPane.showMessageDialog(null, msg);
+  }
 }
