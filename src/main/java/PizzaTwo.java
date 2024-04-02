@@ -14,18 +14,12 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class PizzaTwo {
+  // CONSTANTS
+  final static String[] AVAILABLE_TOPPINGS = { "Pepperoni", "Sausage", "Onion", "Mushroom" };
+  final static String[] OWNERS = { "Kaylyn", "Tim" };
   final static double DISCOUNT = 2.00;
   final static double TAX_RATE = 0.0795;
   final static double TOPPING_CHARGE = 1.25;
-  final static String[] AVAILABLE_TOPPINGS = { "Pepperoni", "Sausage", "Onion", "Mushroom" };
-  final static String[] OWNERS = { "Kaylyn", "Tim" };
-
-  private static boolean discounted = false;
-  private static int size = 12;
-  private static char crustChoice = 'H';
-  private static String crust = "";
-  private static ArrayList<String> toppings = new ArrayList<String>();
-  private static double total = 0;
 
   private static boolean hasOwnersName(String name) {
     for (String owner : OWNERS) {
@@ -47,7 +41,7 @@ public class PizzaTwo {
     JOptionPane.showMessageDialog(null, msg);
   }
 
-  private static void getToppingChoice(String topping) {
+  private static void getToppingChoice(ArrayList<String> toppings, String topping) {
     String msg = "Do you want " + topping + "? (Y/N):";
     char choice = JOptionPane.showInputDialog(msg).toUpperCase().charAt(0);
     while (choice != 'Y' && choice != 'N') {
@@ -60,6 +54,13 @@ public class PizzaTwo {
   }
 
   public static void main(String[] args) {
+    int size = 12;
+    char crustChoice = 'H';
+    String crust = "Hand-tossed crust";
+    ArrayList<String> toppings = new ArrayList<String>();
+    toppings.add("Cheese");
+    boolean discounted = false;
+    double total = 0;
     // NAME: user prompt
     JOptionPane.showMessageDialog(null, "Welcome to Tim and Kaylyn’s Pizzeria");
     String name = JOptionPane.showInputDialog("Enter your first name.");
@@ -109,34 +110,35 @@ public class PizzaTwo {
       default:
         JOptionPane.showMessageDialog(null,
             "Your input was not one of the choices, so a Hand-tossed crust will be made.");
-        crust = "Hand-tossed crust";
         break;
     }
 
     // TOPPINGS: user prompt
     JOptionPane.showMessageDialog(null,
         "All pizzas come with cheese.\nAdditional toppings are $1.25 each, choose from:\nPepperoni, Sausage, Onion, Mushroom");
-    toppings.add("Cheese");
 
     for (String topping : AVAILABLE_TOPPINGS) {
-      getToppingChoice(topping);
+      getToppingChoice(toppings, topping);
     }
 
     // TOPPINGS: additional charge for toppings
-    // do not charge for cheese
+    // do not charge for the first topping
     total += ((toppings.size() - 1) * TOPPING_CHARGE);
     if (discounted && total >= DISCOUNT) {
       total -= DISCOUNT;
     }
 
-    printSummary();
+    printSummary(size, crust, toppings, total);
   }
 
-  private static void printSummary() {
+  private static void printSummary(int size, String crust, ArrayList<String> toppings, double total) {
+    // ITEMIZATION
     String msg = "Your order is as follows:\n";
     msg += size + "-inch pizza\n"; // SIZE
-    msg += crust + "\n";
+    msg += crust + "\n"; // CRUST
     msg += String.join(", ", toppings) + "\n"; // TOPPINGS
+
+    // RECIEPT
     msg += "The cost of your order is: $" + String.format("%.2f", total) + "\n";
     msg += "The tax is: $" + String.format("%.2f", (total * TAX_RATE)) + "\n";
     msg += "The total due is: $" + String.format("%.2f", total + (total * TAX_RATE)) + "\n";
