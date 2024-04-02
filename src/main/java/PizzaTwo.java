@@ -17,12 +17,13 @@ public class PizzaTwo {
   final static double DISCOUNT = 2.00;
   final static double TAX_RATE = 0.0795;
   final static double TOPPING_CHARGE = 1.25;
+  final static String[] AVAILABLE_TOPPINGS = { "Pepperoni", "Sausage", "Onion", "Mushroom" };
   final static String[] OWNERS = { "Kaylyn", "Tim" };
 
   private static boolean discounted = false;
   private static int size = 12;
-  private static char crust = 'H';
-  private static String printCrust = "";
+  private static char crustChoice = 'H';
+  private static String crust = "";
   private static ArrayList<String> toppings = new ArrayList<String>();
   private static double total = 0;
 
@@ -91,24 +92,24 @@ public class PizzaTwo {
     }
 
     // CRUST: user prompt
-    crust = JOptionPane
+    crustChoice = JOptionPane
         .showInputDialog(
             "What type of crust do you want?\n(H) Hand-tossed\n(T) Thin-crust\n(D) Deep-dish\nEnter (H, T, or D): ")
         .toUpperCase().charAt(0);
-    switch (crust) {
+    switch (crustChoice) {
       case 'H':
-        printCrust = "Hand-tossed crust";
+        crust = "Hand-tossed crust";
         break;
       case 'T':
-        printCrust = "Thin-crust";
+        crust = "Thin-crust";
         break;
       case 'D':
-        printCrust = "Deep-dish";
+        crust = "Deep-dish";
         break;
       default:
         JOptionPane.showMessageDialog(null,
             "Your input was not one of the choices, so a Hand-tossed crust will be made.");
-        printCrust = "Hand-tossed crust";
+        crust = "Hand-tossed crust";
         break;
     }
 
@@ -117,13 +118,13 @@ public class PizzaTwo {
         "All pizzas come with cheese.\nAdditional toppings are $1.25 each, choose from:\nPepperoni, Sausage, Onion, Mushroom");
     toppings.add("Cheese");
 
-    getToppingChoice("Pepperoni");
-    getToppingChoice("Sausage");
-    getToppingChoice("Onion");
-    getToppingChoice("Mushroom");
+    for (String topping : AVAILABLE_TOPPINGS) {
+      getToppingChoice(topping);
+    }
 
-    // TOPPINGS: additional charge
-    total += (toppings.size() - 1 * TOPPING_CHARGE);
+    // TOPPINGS: additional charge for toppings
+    // do not charge for cheese
+    total += ((toppings.size() - 1) * TOPPING_CHARGE);
     if (discounted && total >= DISCOUNT) {
       total -= DISCOUNT;
     }
@@ -134,8 +135,8 @@ public class PizzaTwo {
   private static void printSummary() {
     String msg = "Your order is as follows:\n";
     msg += size + "-inch pizza\n"; // SIZE
-    msg += printCrust + "\n";
-    msg += toppings.toString() + "\n"; // TOPPINGS
+    msg += crust + "\n";
+    msg += String.join(", ", toppings) + "\n"; // TOPPINGS
     msg += "The cost of your order is: $" + String.format("%.2f", total) + "\n";
     msg += "The tax is: $" + String.format("%.2f", (total * TAX_RATE)) + "\n";
     msg += "The total due is: $" + String.format("%.2f", total + (total * TAX_RATE)) + "\n";
