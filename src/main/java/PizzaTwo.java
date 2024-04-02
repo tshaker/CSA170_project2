@@ -35,6 +35,7 @@ public class PizzaTwo {
     String[] cols = { "Pizza Size", "Cost" };
     String[][] data = { { "10\"", "$10.99" }, { "12\"", "$12.99" }, { "14\"", "$14.99" }, { "16\"", "$16.99" } };
     JTable table = new JTable(data, cols);
+    table.setEnabled(false); //  disable editing
     JOptionPane.showMessageDialog(null, new JScrollPane(table));
   }
 
