@@ -22,43 +22,14 @@ public class PizzaTwo {
   final static double TAX_RATE = 0.0795;
   final static double TOPPING_CHARGE = 1.25;
 
-  private static boolean hasOwnersName(String name) {
-    for (String owner : OWNERS) {
-      if (owner.equalsIgnoreCase(name)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static void printMenu() {
-    String[] cols = { "Pizza Size", "Cost" };
-    String[][] data = { { "10\"", "$10.99" }, { "12\"", "$12.99" }, { "14\"", "$14.99" }, { "16\"", "$16.99" } };
-    JTable table = new JTable(data, cols);
-    table.setEnabled(false); //  disable editing
-    JOptionPane.showMessageDialog(null, new JScrollPane(table));
-  }
-
-  private static void getToppingChoice(ArrayList<String> toppings, String topping) {
-    String msg = "Do you want " + topping + "? (Y/N):";
-    char choice = JOptionPane.showInputDialog(msg).toUpperCase().charAt(0);
-    while (choice != 'Y' && choice != 'N') {
-      choice = JOptionPane.showInputDialog("Please enter Y for Yes or N for No.\n" + msg).toUpperCase().charAt(0);
-    }
-
-    if (choice == 'Y') {
-      toppings.add(topping);
-    }
-  }
-
   public static void main(String[] args) {
     int size = 12;
     char crustChoice = 'H';
     String crust = "Hand-tossed crust";
-    ArrayList<String> toppings = new ArrayList<String>();
-    toppings.add("Cheese");
     boolean discounted = false;
     double total = 0;
+    ArrayList<String> toppings = new ArrayList<String>();
+    toppings.add("Cheese");
     // NAME: user prompt
     JOptionPane.showMessageDialog(null, "Welcome to Tim and Kaylyn’s Pizzeria");
     String name = JOptionPane.showInputDialog("Enter your first name.");
@@ -69,12 +40,11 @@ public class PizzaTwo {
           "You have the same name as one of the owners, you are eligible for a $2.00 discount!");
     }
 
+    // Show menu
     printMenu();
 
     // SIZE: user prompt
-    String pizzaSize = JOptionPane
-        .showInputDialog("What size pizza would you like?\n10, 12, 14, or 16 (enter the number only): ");
-    size = Integer.parseInt(pizzaSize);
+    size = getPizzaSize();
     // SIZE: pricing
     if (size == 10) {
       total += 10.99;
@@ -91,10 +61,7 @@ public class PizzaTwo {
     }
 
     // CRUST: user prompt
-    crustChoice = JOptionPane
-        .showInputDialog(
-            "What type of crust do you want?\n(H) Hand-tossed\n(T) Thin-crust\n(D) Deep-dish\nEnter (H, T, or D): ")
-        .toUpperCase().charAt(0);
+    crustChoice = getCrustChoice();
     switch (crustChoice) {
       case 'H':
         crust = "Hand-tossed crust";
@@ -120,13 +87,64 @@ public class PizzaTwo {
     }
 
     // TOPPINGS: additional charge for toppings
-    // do not charge for the first topping
+    // Do not charge for the first topping (cheese)
     total += ((toppings.size() - 1) * TOPPING_CHARGE);
     if (discounted && total >= DISCOUNT) {
       total -= DISCOUNT;
     }
 
     printSummary(size, crust, toppings, total);
+  }
+
+  private static char getCrustChoice() {
+    try {
+      return JOptionPane.showInputDialog(
+          "What type of crust do you want?\n(H) Hand-tossed\n(T) Thin-crust\n(D) Deep-dish\nEnter (H, T, or D): ")
+          .toUpperCase().charAt(0);
+    } catch (StringIndexOutOfBoundsException e) {
+      return '*';
+    }
+  }
+
+  private static int getPizzaSize() {
+    try {
+      return Integer.parseInt(
+          JOptionPane.showInputDialog("What size pizza would you like?\n10, 12, 14, or 16 (enter the number only): "));
+    } catch (NumberFormatException e) {
+      return -1;
+    }
+  }
+
+  private static void getToppingChoice(ArrayList<String> toppings, String topping) {
+    char choice = '*';
+    while (choice != 'Y' && choice != 'N') {
+      try {
+        choice = JOptionPane.showInputDialog("Do you want " + topping + "? (Y/N):").toUpperCase().charAt(0);
+      } catch (StringIndexOutOfBoundsException e) {
+        choice = 'N';
+      }
+    }
+
+    if (choice == 'Y') {
+      toppings.add(topping);
+    }
+  }
+
+  private static boolean hasOwnersName(String name) {
+    for (String owner : OWNERS) {
+      if (owner.equalsIgnoreCase(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static void printMenu() {
+    String[] cols = { "Pizza Size", "Cost" };
+    String[][] data = { { "10\"", "$10.99" }, { "12\"", "$12.99" }, { "14\"", "$14.99" }, { "16\"", "$16.99" } };
+    JTable menu = new JTable(data, cols);
+    menu.setEnabled(false); // disables editing the menu
+    JOptionPane.showMessageDialog(null, new JScrollPane(menu));
   }
 
   private static void printSummary(int size, String crust, ArrayList<String> toppings, double total) {
