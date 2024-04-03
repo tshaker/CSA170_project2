@@ -63,13 +63,6 @@ public class PizzaOrder {
             order.getToppingChoice(topping);
         }
 
-        // TOPPINGS: additional charge for toppings
-        // Do not charge for the first topping (cheese)
-        order.subtotal += ((order.toppings.size() - 1) * TOPPING_CHARGE);
-        if (order.discounted && order.subtotal >= DISCOUNT) {
-            order.subtotal -= DISCOUNT;
-        }
-
         order.printSummary();
     }
 
@@ -138,6 +131,7 @@ public class PizzaOrder {
 
         if (choice == 'Y') {
             this.toppings.add(topping);
+            this.subtotal += TOPPING_CHARGE;
         }
     }
 
@@ -159,8 +153,12 @@ public class PizzaOrder {
     }
 
     private void printSummary() {
-        double tax = this.subtotal * TAX_RATE;
-        double total = this.subtotal + tax;
+        double subtotal = this.subtotal;
+        if (this.discounted && subtotal >= DISCOUNT) {
+            subtotal -= DISCOUNT;
+        }
+        double tax = subtotal * TAX_RATE;
+        double total = subtotal + tax;
         // ITEMIZATION
         StringBuilder msg = new StringBuilder("Your order is as follows:\n");
         msg.append(this.pizzaSize + "-inch pizza\n"); // SIZE
@@ -168,7 +166,7 @@ public class PizzaOrder {
         msg.append(String.join(", ", this.toppings) + "\n"); // TOPPINGS
 
         // RECIEPT
-        msg.append("The cost of your order is: $" + String.format("%.2f", this.subtotal) + "\n");
+        msg.append("The cost of your order is: $" + String.format("%.2f", subtotal) + "\n");
         msg.append("The tax is: $" + String.format("%.2f", tax) + "\n");
         msg.append("The total due is: $" + String.format("%.2f", total) + "\n");
         msg.append("Your order will be ready for pickup in 30 minutes.");
