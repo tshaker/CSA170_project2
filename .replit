@@ -2,6 +2,7 @@ compile = "javac -classpath .:target/dependency/* -d . $(find . -type f -name '*
 run = "java -classpath .:target/dependency/* PizzaOrder"
 entrypoint = "src/main/java/PizzaOrder.java"
 hidden = ["**/*.class"]
+modules = ["python-3.10:v25-20230920-d4ad2e4"]
 
 [packager]
 language = "java"
@@ -69,3 +70,7 @@ build = [
 ]
 run = ["java", "-classpath", ".:target/dependency/*", "PizzaOrder"]
 deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 8000
+externalPort = 80
