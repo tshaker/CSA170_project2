@@ -27,6 +27,16 @@ public class PizzaOrder {
     final static String[] AVAILABLE_TOPPINGS = { "Pepperoni", "Sausage", "Onion", "Mushroom" };
 
     /**
+     * The available pizza sizes.
+     */
+    final static int[] AVAILABLE_SIZES = { 10, 12, 14, 16 };
+
+    /**
+     * The dollar costs associated with AVAILABLE_SIZES.
+     */
+    final static double[] SIZE_COSTS = { 10.99, 12.99, 14.99, 16.99 };
+
+    /**
      * The names of the owners.
      */
     final static String[] OWNERS = { "Kaylyn", "Tim" };
@@ -62,11 +72,6 @@ public class PizzaOrder {
      * Whether or not the order is discounted.
      */
     boolean discounted = false;
-
-    /**
-     * The subtotal of the order.
-     */
-    double subtotal = 0;
 
     /**
      * The name of the customer for the order.
@@ -156,31 +161,29 @@ public class PizzaOrder {
     }
 
     /**
-     * Prompts the user for their choice of pizza size and adds the corresponding
-     * price to the subtotal.
+     * Prompts the user for their choice of pizza size. If the input is not one of
+     * the available sizes, a 12-inch pizza will be selected.
      */
     public void handlePizzaSize() {
+        int choice = -1;
         try {
-            this.pizzaSize = Integer.parseInt(JOptionPane
+            choice = Integer.parseInt(JOptionPane
                     .showInputDialog("What size pizza would you like?\n10, 12, 14, or 16 (enter the number only): "));
         } catch (NumberFormatException e) {
             this.pizzaSize = -1;
         }
 
-        if (this.pizzaSize == 10) {
-            this.subtotal += 10.99;
-        } else if (this.pizzaSize == 12) {
-            this.subtotal += 12.99;
-        } else if (this.pizzaSize == 14) {
-            this.subtotal += 14.99;
-        } else if (this.pizzaSize == 16) {
-            this.subtotal += 16.99;
-        } else {
-            this.subtotal += 12.99;
-            this.pizzaSize = 12;
-            JOptionPane.showMessageDialog(null,
-                    "Your input was not one of the choices, so a 12-inch pizza will be made.");
+        // check if their choice is one of the available sizes
+        for (int size : AVAILABLE_SIZES) {
+            if (size == choice) {
+                this.pizzaSize = choice;
+                return;
+            }
         }
+
+        this.pizzaSize = 12;
+        JOptionPane.showMessageDialog(null,
+                "Your input was not one of the choices, so a 12-inch pizza will be made.");
     }
 
     /**
@@ -202,7 +205,6 @@ public class PizzaOrder {
 
         if (choice == 'Y') {
             this.toppings.add(topping);
-            this.subtotal += TOPPING_CHARGE;
         }
     }
 
@@ -226,10 +228,41 @@ public class PizzaOrder {
      */
     public static void printMenu() {
         String[] cols = { "Pizza Size", "Cost" };
-        String[][] data = { { "10\"", "$10.99" }, { "12\"", "$12.99" }, { "14\"", "$14.99" }, { "16\"", "$16.99" } };
+        String[][] data = new String[AVAILABLE_SIZES.length][2];
+
+        for (int i = 0; i < AVAILABLE_SIZES.length; i++) {
+            data[i][0] = AVAILABLE_SIZES[i] + "\"";
+            data[i][1] = "$" + String.format("%.2f", SIZE_COSTS[i]);
+        }
+
         JTable menu = new JTable(data, cols);
         menu.setEnabled(false); // disables editing the menu
         JOptionPane.showMessageDialog(null, new JScrollPane(menu));
+    }
+
+    /**
+     * Calculates the subtotal of the order based on the pizza size, number of
+     * additional toppings, and whether the order is discounted.
+     * 
+     * @return the subtotal after discounts
+     */
+    public double getSubtotal() {
+        double subtotal = 0;
+        // add the cost of the pizza size
+        for (int i = 0; i < AVAILABLE_SIZES.length; i++) {
+            if (this.pizzaSize == AVAILABLE_SIZES[i]) {
+                subtotal += SIZE_COSTS[i];
+                break;
+            }
+        }
+
+        int additionalToppings = this.toppings.size() - 1; // subtract 1 for the cheese that comes with the pizza
+        subtotal += additionalToppings * TOPPING_CHARGE; // add the cost of the toppings
+        // apply discount if applicable and the subtotal is greater than the discount
+        if (this.discounted && subtotal >= DISCOUNT) {
+            subtotal -= DISCOUNT;
+        }
+        return subtotal;
     }
 
     /**
@@ -237,10 +270,7 @@ public class PizzaOrder {
      * summary of the order for the user, then tells them when it will be ready.
      */
     public void printSummary() {
-        double subtotal = this.subtotal;
-        if (this.discounted && subtotal >= DISCOUNT) {
-            subtotal -= DISCOUNT;
-        }
+        double subtotal = getSubtotal();
         double tax = subtotal * TAX_RATE;
         double total = subtotal + tax;
         // ITEMIZATION
