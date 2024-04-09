@@ -188,8 +188,7 @@ public class PizzaOrder {
 
     /**
      * Prompts the user to ask if they want the specified topping. If they do, it is
-     * added to the order's toppings array and the TOPPING_CHARGE is added to the
-     * subtotal.
+     * added to the order's toppings array.
      * 
      * @param topping the topping to ask the customer if they want
      */
