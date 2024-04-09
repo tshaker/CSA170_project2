@@ -270,7 +270,7 @@ public class PizzaOrder {
      * summary of the order for the user, then tells them when it will be ready.
      */
     public void printSummary() {
-        double subtotal = getSubtotal();
+        double subtotal = this.getSubtotal();
         double tax = subtotal * TAX_RATE;
         double total = subtotal + tax;
         // ITEMIZATION
