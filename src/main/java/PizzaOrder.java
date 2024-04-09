@@ -2,7 +2,7 @@
   Nguyen, Kaylyn
   Shaker, Tim     
 
-  April 5, 2024
+  April 10, 2024
 
   CS A170
   Prof. Mayada Alani
@@ -35,6 +35,13 @@ public class PizzaOrder {
      * The dollar costs associated with AVAILABLE_SIZES.
      */
     final static double[] SIZE_COSTS = { 10.99, 12.99, 14.99, 16.99 };
+
+    static {
+        // check that each available size has an associated cost
+        if (AVAILABLE_SIZES.length != SIZE_COSTS.length) {
+            throw new RuntimeException("AVAILABLE_SIZES and SIZE_COSTS must have the same length");
+        }
+    }
 
     /**
      * The names of the owners.
@@ -84,7 +91,7 @@ public class PizzaOrder {
     ArrayList<String> toppings = new ArrayList<String>();
 
     /**
-     * Creates a new instance of a PizzaOrder object and adds Cheese as a topping.
+     * Creates a new instance of PizzaOrder and adds Cheese as a topping.
      */
     public PizzaOrder() {
         this.toppings.add("Cheese"); // all pizzas come with cheese
@@ -105,7 +112,8 @@ public class PizzaOrder {
         if (hasOwnersName(order.customerName)) {
             order.discounted = true;
             JOptionPane.showMessageDialog(null,
-                    "You have the same name as one of the owners, you are eligible for a $2.00 discount!");
+                    "You have the same name as one of the owners, you are eligible for a $"
+                            + String.format("%.2f", DISCOUNT) + " discount!");
         }
 
         // Show menu
@@ -119,7 +127,8 @@ public class PizzaOrder {
 
         // TOPPINGS: user prompt
         JOptionPane.showMessageDialog(null,
-                "All pizzas come with cheese.\nAdditional toppings are $1.25 each, choose from:\nPepperoni, Sausage, Onion, Mushroom");
+                "All pizzas come with cheese.\nAdditional toppings are $" + String.format("%.2f", TOPPING_CHARGE)
+                        + " each, choose from:\n" + String.join(", ", AVAILABLE_TOPPINGS));
 
         for (String topping : AVAILABLE_TOPPINGS) {
             order.handleToppingChoice(topping);
@@ -165,12 +174,24 @@ public class PizzaOrder {
      * the available sizes, a 12-inch pizza will be selected.
      */
     public void handlePizzaSize() {
+        // build the string of available sizes with the last size following "or"
+        StringBuilder sizes = new StringBuilder();
+        for (int i = 0; i < AVAILABLE_SIZES.length; i++) {
+            sizes.append(AVAILABLE_SIZES[i]);
+            if (i < AVAILABLE_SIZES.length - 2) {
+                sizes.append(", ");
+            } else if (i == AVAILABLE_SIZES.length - 2) {
+                sizes.append(", or ");
+            }
+        }
+
         int choice = -1;
         try {
             choice = Integer.parseInt(JOptionPane
-                    .showInputDialog("What size pizza would you like?\n10, 12, 14, or 16 (enter the number only): "));
+                    .showInputDialog(
+                            "What size pizza would you like?\n" + sizes.toString() + " (enter the number only): "));
         } catch (NumberFormatException e) {
-            this.pizzaSize = -1;
+            choice = -1;
         }
 
         // check if their choice is one of the available sizes
@@ -223,7 +244,7 @@ public class PizzaOrder {
     }
 
     /**
-     * Prints the menu for the user to see.
+     * Prints the menu for the user to view.
      */
     public static void printMenu() {
         String[] cols = { "Pizza Size", "Cost" };
@@ -246,13 +267,18 @@ public class PizzaOrder {
      * @return the subtotal after discounts
      */
     public double getSubtotal() {
-        double subtotal = 0;
-        // add the cost of the pizza size
+        double subtotal = -1; // use a sentinel value to check if the size was found
+
+        // find the cost of the pizza size
         for (int i = 0; i < AVAILABLE_SIZES.length; i++) {
             if (this.pizzaSize == AVAILABLE_SIZES[i]) {
-                subtotal += SIZE_COSTS[i];
+                subtotal = SIZE_COSTS[i];
                 break;
             }
+        }
+
+        if (subtotal == -1) {
+            throw new IllegalArgumentException("Invalid pizza size");
         }
 
         int additionalToppings = this.toppings.size() - 1; // subtract 1 for the cheese that comes with the pizza
