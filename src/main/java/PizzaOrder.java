@@ -281,8 +281,14 @@ public class PizzaOrder {
             throw new IllegalArgumentException("Invalid pizza size");
         }
 
-        int additionalToppings = this.toppings.size() - 1; // subtract 1 for the cheese that comes with the pizza
-        subtotal += additionalToppings * TOPPING_CHARGE; // add the cost of the toppings
+        int numToppings = 0;
+        for (String topping : this.toppings) {
+            if (!topping.equals("Cheese")) { // don't charge for cheese
+                numToppings++;
+            }
+        }
+
+        subtotal += numToppings * TOPPING_CHARGE; // add the cost of the toppings
         // apply discount if applicable and the subtotal is greater than the discount
         if (this.discounted && subtotal >= DISCOUNT) {
             subtotal -= DISCOUNT;
